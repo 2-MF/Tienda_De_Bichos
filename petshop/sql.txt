@@ -1,0 +1,128 @@
+CREATE DATABASE petshop;
+USE petshop;
+
+CREATE TABLE funcionario (
+    id_funcionario INT AUTO_INCREMENT,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    usuario VARCHAR(50) NOT NULL,
+    contrasena VARCHAR(100) NOT NULL,
+    rol VARCHAR(20) NOT NULL,
+    PRIMARY KEY (id_funcionario)
+);
+
+CREATE TABLE cliente (
+    cedula VARCHAR(20),
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    PRIMARY KEY (cedula)
+);
+
+
+CREATE TABLE mascota (
+    id_mascota INT AUTO_INCREMENT,
+    nombre VARCHAR(50) NOT NULL,
+    especie VARCHAR(30) NOT NULL,
+    raza VARCHAR(50),
+    edad INT,
+    cedula_cliente VARCHAR(20) NOT NULL,
+    PRIMARY KEY (id_mascota),
+    FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula)
+);
+
+CREATE TABLE servicio (
+    id_servicio INT AUTO_INCREMENT,
+    nombre VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id_servicio)
+);
+
+
+CREATE TABLE solicitud (
+    id_solicitud INT AUTO_INCREMENT,
+    fecha DATE NOT NULL,
+    id_mascota INT NOT NULL,
+    id_servicio INT NOT NULL,
+    cedula_cliente VARCHAR(20) NOT NULL,
+    PRIMARY KEY (id_solicitud),
+    FOREIGN KEY (id_mascota) REFERENCES mascota(id_mascota),
+    FOREIGN KEY (id_servicio) REFERENCES servicio(id_servicio),
+    FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula)
+);
+
+
+CREATE TABLE agenda (
+    id_agenda INT AUTO_INCREMENT,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    id_solicitud INT NOT NULL,
+    id_funcionario INT NOT NULL,
+    estado VARCHAR(30) NOT NULL,
+    PRIMARY KEY (id_agenda),
+    FOREIGN KEY (id_solicitud) REFERENCES solicitud(id_solicitud),
+    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario)
+);
+
+
+CREATE TABLE consulta (
+    id_consulta INT AUTO_INCREMENT,
+    fecha DATE NOT NULL,
+    descripcion VARCHAR(255) NOT NULL,
+    cedula_cliente VARCHAR(20) NOT NULL,
+    id_funcionario INT NOT NULL,
+    PRIMARY KEY (id_consulta),
+    FOREIGN KEY (cedula_cliente) REFERENCES cliente(cedula),
+    FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario)
+);
+
+
+INSERT INTO servicio (nombre) VALUES
+('Corte de pelo'),
+('Baño'),
+('Corte y baño');
+
+
+INSERT INTO funcionario
+(nombre, apellido, usuario, contrasena, rol)
+VALUES
+('Carlos', 'Gomez', 'admin', '1234', 'Administrador'),
+('Juan', 'Perez', 'juan', '1234', 'Funcionario'),
+('Pedro', 'Rodriguez', 'pedro', '1234', 'Bañador');
+
+
+INSERT INTO cliente
+(cedula, nombre, apellido, telefono, email)
+VALUES
+('12345678', 'Ana', 'Martinez', '099111111', 'ana@gmail.com'),
+('23456789', 'Luis', 'Gonzalez', '099222222', 'luis@gmail.com');
+
+
+INSERT INTO mascota
+(nombre, especie, raza, edad, cedula_cliente)
+VALUES
+('Firulais', 'Perro', 'Labrador', 3, '12345678'),
+('Toby', 'Perro', 'Caniche', 5, '12345678'),
+('Luna', 'Perro', 'Bulldog', 2, '23456789');
+
+
+INSERT INTO solicitud
+(fecha, id_mascota, id_servicio, cedula_cliente)
+VALUES
+('2026-09-01', 1, 2, '12345678'),
+('2026-09-01', 2, 3, '12345678'),
+('2026-09-01', 3, 1, '23456789');
+
+
+INSERT INTO agenda
+(fecha, hora, id_solicitud, id_funcionario, estado)
+VALUES
+('2026-09-01', '09:00:00', 1, 3, 'Pendiente'),
+('2026-09-01', '10:00:00', 2, 3, 'Pendiente'),
+('2026-09-01', '11:00:00', 3, 3, 'Pendiente');
+
+
+INSERT INTO consulta
+(fecha, descripcion, cedula_cliente, id_funcionario)
+VALUES
+('2026-09-01', 'Consulta sobre el precio del baño', '12345678', 2);
